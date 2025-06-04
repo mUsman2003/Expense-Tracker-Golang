@@ -1,28 +1,24 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	// Basic HTML content
-	fmt.Fprint(w, `
-		<!DOCTYPE html>
-		<html>
-		<head>
-			<title>Golang Skeleton Code</title>
-		</head>
-		<body>
-			<h1>Hello, Go Web!</h1>
-			<p>This is a simple web page served using Golang.</p>
-		</body>
-		</html>
-	`)
+type Response struct {
+	Name string `json:"name"`
+}
+
+func getNameHandler(w http.ResponseWriter, r *http.Request) {
+	response := Response{Name: "Usman"}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
 
 func main() {
-	http.HandleFunc("/", handler)
-	fmt.Println("Server starting at http://localhost:8080")
+	http.HandleFunc("/name", getNameHandler)
+
+	println("Server is running at http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
